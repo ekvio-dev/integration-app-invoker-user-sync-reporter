@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Ekvio\Integration\Invoker;
 
+use Ekvio\Integration\Contracts\Extractor;
 use Ekvio\Integration\Contracts\Invoker;
 use Ekvio\Integration\Contracts\Profiler;
 use Ekvio\Integration\Invoker\Report\ReportConverter;
@@ -18,6 +19,8 @@ class TypicalUserSyncReport implements Invoker
 {
     private const NAME = 'User sync aggregate report';
 
+
+    private $extractor;
     /**
      * @var FilesystemInterface
      */
@@ -40,12 +43,14 @@ class TypicalUserSyncReport implements Invoker
     private $profiler;
 
     public function __construct(
+        Extractor $extractor,
         FilesystemInterface  $fs,
         Reporter $successReport,
         Reporter $errorReport,
         ReportConverter $converter,
         Profiler $profiler
     ) {
+        $this->extractor = $extractor;
         $this->fs = $fs;
         $this->successReport = $successReport;
         $this->errorReport = $errorReport;
@@ -70,17 +75,8 @@ class TypicalUserSyncReport implements Invoker
             throw new RuntimeException('Error report filename not set');
         }
 
-        $usersFile = $arguments['users'];
-        $users = [];
-
-        $this->profiler->profile(sprintf('Check %s file existence...', $usersFile));
-        if(!$this->fs->has($usersFile)) {
-            if(($users = $this->fs->read($usersFile)) === false) {
-                throw new RuntimeException(sprintf('Read error %s file', $usersFile));
-            }
-            $users = json_decode($users, true);
-            $this->profiler->profile(sprintf('Get %s users from file', count($users)));
-        }
+        $this->profiler->profile('Extract users...');
+        $users = $this->extractor->extract();
 
         $this->profiler->profile('Build success report...');
         $successReport = $this->successReport->build([

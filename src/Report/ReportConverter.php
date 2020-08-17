@@ -11,7 +11,8 @@ interface ReportConverter
 {
     /**
      * @param ReportCollector $collector
+     * @param array $options
      * @return mixed
      */
-    public function convert(ReportCollector $collector);
+    public function convert(ReportCollector $collector, array $options = []);
 }

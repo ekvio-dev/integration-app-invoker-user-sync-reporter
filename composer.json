@@ -15,7 +15,8 @@
     "ext-mbstring": "*",
     "ekvio-dev/integration-app-contracts": "^2",
     "league/flysystem": "^1.1",
-    "league/csv": "^9.6"
+    "league/csv": "^9.6",
+    "ekvio-dev/integration-app-extractor-data-from-csv": "^2"
   },
   "autoload": {
     "psr-4": {

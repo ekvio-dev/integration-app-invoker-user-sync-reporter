@@ -11,6 +11,9 @@ use RuntimeException;
  */
 class ReportHeader
 {
+    /**
+     * @var array|string[]
+     */
     private $headerMap = [
         'login' => 'USR_LOGIN',
         'first_name' => 'USR_FIRST_NAME',
@@ -28,16 +31,28 @@ class ReportHeader
         'groups.assignment' => 'ASSIGNMENT_NAME',
     ];
 
+    /**
+     * @var array
+     */
     private $formMap = [];
+    /**
+     * @var array
+     */
+    private $withoutFields = [];
 
     /**
      * ReportSuccessHeader constructor.
      * @param array $headerMap
+     * @param array $options
      */
-    public function __construct(array $headerMap = [])
+    public function __construct(array $headerMap = [], array $options = [])
     {
         if($headerMap) {
             $this->headerMap = array_merge($this->headerMap, $headerMap);
+        }
+
+        if(isset($options['withoutFields']) && is_array($options['withoutFields'])) {
+            $this->withoutFields = $options['withoutFields'];
         }
     }
 
@@ -63,6 +78,17 @@ class ReportHeader
      */
     public function headers(): array
     {
+        if($this->withoutFields) {
+            $headers = $this->headerMap;
+            $forms = $this->formMap;
+            foreach ($this->withoutFields as $field) {
+                unset($headers[$field]);
+                unset($forms[$field]);
+            }
+
+            return array_merge(array_values($headers), array_values($forms));
+        }
+
         return array_merge(array_values($this->headerMap), array_values($this->formMap));
     }
 

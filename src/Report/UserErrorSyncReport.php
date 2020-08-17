@@ -61,6 +61,10 @@ class UserErrorSyncReport implements Reporter
         $reportErrors = $this->reportErrors->errors();
         foreach ($data['users'] as $index => $user) {
 
+            if(!$this->hasError($loginField, $index, $user)) {
+                continue;
+            }
+
             $username = null;
             foreach ($headers as $header) {
                 if($loginField === $header) {
@@ -69,7 +73,7 @@ class UserErrorSyncReport implements Reporter
                 $content[$index][] = $user[$header];
             }
 
-            $errors = $username !== null ? $this->findErrorsByUsername($username) : $this->findErrorsByPosition($index);
+            $errors = $username ? $this->findErrorsByUsername($username) : $this->findErrorsByPosition($index);
             foreach ($reportErrors as $reportError) {
                 $content[$index][] = in_array($reportError, $errors, true) ? 1 : 0;
             }
@@ -77,6 +81,23 @@ class UserErrorSyncReport implements Reporter
 
         $header = array_merge($headers, $reportErrors);
         return ReportDataCollector::create($header, $content);
+    }
+
+    /**
+     * @param string $loginField
+     * @param int $index
+     * @param array $user
+     * @return bool
+     */
+    private function hasError(string $loginField, int $index, array $user): bool
+    {
+        $username = $user[$loginField] ?? null;
+
+        if($username) {
+            return isset($this->syncErrorsLog[$username]);
+        }
+
+        return isset($this->syncErrorsLog[$index]);
     }
 
     /**
