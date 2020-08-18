@@ -160,6 +160,8 @@ $typicalReportBuilder = new TypicalUserSyncReport(
 
 $typicalReportBuilder([
     'prev' => $syncLog,
-    'successReportFilename' => 'done.csv',
-    'errorReportFilename' => 'error.csv'
+    'parameters' => [
+        'successReportFilename' => 'done.csv',
+        'errorReportFilename' => 'error.csv'
+    ]
 ]);

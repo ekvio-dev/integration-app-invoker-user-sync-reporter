@@ -111,44 +111,6 @@ class UserErrorSyncReportTest extends TestCase
         ];
     }
 
-    private function defaultHeader(): array
-    {
-        return [
-            'USR_LOGIN',
-            'USR_FIRST_NAME',
-            'USR_LAST_NAME',
-            'USR_EMAIL',
-            'USR_MOBILE',
-            'MANAGER_EMAIL',
-            'USR_UDF_USER_FIRED',
-            'REGION_NAME',
-            'CITY_NAME',
-            'ROLE',
-            'POSITION_NAME',
-            'TEAM_NAME',
-            'DEPARTAMENT_NAME',
-            'ASSIGNMENT_NAME',
-            'LOGIN_NVALID',
-            'EMAIL_NUNIQ',
-            'PHONE_NUNIQ',
-            'EMAIL_NVALID',
-            'CHIEF_EMAIL_NVALID',
-            'PHONE_NVALID',
-            'TABNUMBER_EMPT',
-            'HOLDING_EMPT',
-            'BE_EMPT',
-            'DIVISION_EMPT',
-            'TERRITORY_EMPT',
-            'TEAM_EMPT',
-            'POSITION_EMPT',
-            'FIRST_NAME_EMPT',
-            'LAST_NAME_EMPT',
-            'FIRST_NAME_NVALID',
-            'LAST_NAME_NVALID',
-            'UNKWN_ERR'
-        ];
-    }
-
     private function defaultUsers()
     {
         return [
@@ -222,7 +184,6 @@ class UserErrorSyncReportTest extends TestCase
             'syncLog' => []
         ]);
 
-        $this->assertEquals($this->defaultHeader(), $report->header());
         $this->assertEquals([], $report->content());
     }
 
@@ -233,7 +194,6 @@ class UserErrorSyncReportTest extends TestCase
             'syncLog' => $this->defaultSyncLog()
         ]);
 
-        $this->assertEquals($this->defaultHeader(), $report->header());
         $this->assertEquals([], $report->content());
     }
 
@@ -244,7 +204,6 @@ class UserErrorSyncReportTest extends TestCase
             'syncLog' => $this->defaultSyncLog()
         ]);
 
-        $this->assertEquals($this->defaultHeader(), $report->header());
         $this->assertEquals([], $report->content());
     }
 
@@ -255,7 +214,6 @@ class UserErrorSyncReportTest extends TestCase
             'syncLog' => $this->defaultSyncLog()
         ]);
 
-        $this->assertEquals($this->defaultHeader(), $report->header());
         $this->assertEquals([
             [
                 'test1',
@@ -272,7 +230,7 @@ class UserErrorSyncReportTest extends TestCase
                 'Head team',
                 'Demo',
                 'Demo',
-                0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+                0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
             ],
             [
                 'test2',
@@ -289,7 +247,7 @@ class UserErrorSyncReportTest extends TestCase
                 'Head team',
                 'Demo',
                 'Demo',
-                0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1
+                0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1
             ],
             [
                 null,
@@ -306,7 +264,7 @@ class UserErrorSyncReportTest extends TestCase
                 'Head team',
                 'Demo',
                 'Demo',
-                1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+                1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
             ]
         ], $report->content());
     }

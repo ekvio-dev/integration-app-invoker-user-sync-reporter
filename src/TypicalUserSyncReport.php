@@ -67,13 +67,16 @@ class TypicalUserSyncReport implements Invoker
             throw new RuntimeException('No sync log in "prev" key');
         }
 
-        if(empty($arguments['successReportFilename'])) {
+        if(empty($arguments['parameters']['successReportFilename'])) {
             throw new RuntimeException('Success report filename not set');
         }
 
-        if(empty($arguments['errorReportFilename'])) {
+        if(empty($arguments['parameters']['errorReportFilename'])) {
             throw new RuntimeException('Error report filename not set');
         }
+
+        $successReportFilename = $arguments['parameters']['successReportFilename'];
+        $errorReportFilename = $arguments['parameters']['errorReportFilename'];
 
         $this->profiler->profile('Extract users...');
         $users = $this->extractor->extract();
@@ -85,8 +88,8 @@ class TypicalUserSyncReport implements Invoker
         ]);
         $this->profiler->profile('Convert report...');
         $data = $this->converter->convert($successReport);
-        $this->profiler->profile(sprintf('Write success report data to %s', $arguments['successReportFilename']));
-        $this->writeReportToFile($arguments['successReportFilename'], $data);
+        $this->profiler->profile(sprintf('Write success report data to %s', $successReportFilename));
+        $this->writeReportToFile($successReportFilename, $data);
 
         $this->profiler->profile('Build error report....');
         $errorReport = $this->errorReport->build([
@@ -95,8 +98,8 @@ class TypicalUserSyncReport implements Invoker
         ]);
         $this->profiler->profile('Convert error report');
         $data = $this->converter->convert($errorReport);
-        $this->profiler->profile(sprintf('Write error report data to %s', $arguments['errorReportFilename']));
-        $this->writeReportToFile($arguments['errorReportFilename'], $data);
+        $this->profiler->profile(sprintf('Write error report data to %s', $errorReportFilename));
+        $this->writeReportToFile($errorReportFilename, $data);
     }
 
     /**
