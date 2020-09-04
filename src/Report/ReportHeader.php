@@ -15,6 +15,7 @@ class ReportHeader
      * @var array|string[]
      */
     private $headerMap = [
+        'source' => 'SOURCE',
         'login' => 'USR_LOGIN',
         'first_name' => 'USR_FIRST_NAME',
         'last_name' => 'USR_LAST_NAME',

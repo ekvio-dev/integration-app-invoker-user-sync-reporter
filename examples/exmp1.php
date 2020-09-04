@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 use Ekvio\Integration\Contracts\Profiler;
-use Ekvio\Integration\Extractor\DataFromCsv;
+use Ekvio\Integration\Contracts\User\UserPipelineData;
 use Ekvio\Integration\Invoker\Report\CsvReportConverter;
 use Ekvio\Integration\Invoker\Report\ReportError;
 use Ekvio\Integration\Invoker\Report\ReportHeader;
@@ -22,135 +22,271 @@ class ConsoleProfiler implements Profiler
     }
 }
 
+class UserSyncPipelineData implements UserPipelineData
+{
+    private $keyDelimiter = '___';
+    private $sources = [
+        '0_aaa' => [
+            'name' => 'hr1.csv',
+            'data' => [
+                [
+                    'USR_LOGIN' => 'test1',
+                    'USR_FIRST_NAME' => 'Петр',
+                    'USR_LAST_NAME' => 'Петров',
+                    'USR_EMAIL' => null,
+                    'USR_MOBILE' => '79276222400',
+                    'MANAGER_EMAIL' => null,
+                    'USR_UDF_USER_FIRED' => '0',
+                    'REGION_NAME' => 'Московская область',
+                    'CITY_NAME' => 'Москва',
+                    'ROLE' => 'Дирекция',
+                    'POSITION_NAME' => 'Генеральный директор',
+                    'TEAM_NAME' => 'Дирекция',
+                    'DEPARTAMENT_NAME' => 'ИТР',
+                    'ASSIGNMENT_NAME' => 'Default',
+                ],
+                [
+                    'USR_LOGIN' => 'test2',
+                    'USR_FIRST_NAME' => 'Иван',
+                    'USR_LAST_NAME' => 'Иванов',
+                    'USR_EMAIL' => 'ivanov@first.ru',
+                    'USR_MOBILE' => '79276222410',
+                    'MANAGER_EMAIL' => 'petrov@first.ru',
+                    'USR_UDF_USER_FIRED' => '0',
+                    'REGION_NAME' => 'Московская область',
+                    'CITY_NAME' => 'Москва',
+                    'ROLE' => 'Дирекция',
+                    'POSITION_NAME' => 'Помощник директора',
+                    'TEAM_NAME' => 'Дирекция',
+                    'DEPARTAMENT_NAME' => 'ИТР',
+                    'ASSIGNMENT_NAME' => 'Default',
+                ],
+                [
+                    'USR_LOGIN' => 'test3',
+                    'USR_FIRST_NAME' => null,
+                    'USR_LAST_NAME' => null,
+                    'USR_EMAIL' => 'andreev@first.ru',
+                    'USR_MOBILE' => '79276222420',
+                    'MANAGER_EMAIL' => 'petrov@first.ru',
+                    'USR_UDF_USER_FIRED' => '0',
+                    'REGION_NAME' => 'Московская область',
+                    'CITY_NAME' => 'Москва',
+                    'ROLE' => 'Дирекция',
+                    'POSITION_NAME' => 'Помощник директора',
+                    'TEAM_NAME' => 'Дирекция',
+                    'DEPARTAMENT_NAME' => 'ИТР',
+                    'ASSIGNMENT_NAME' => 'Default',
+                ],
+            ]
+        ],
+        '1_bbb' => [
+            'name' => 'hr2.csv',
+            'data' => [
+                [
+                    'USR_LOGIN' => 'test2_1',
+                    'USR_FIRST_NAME' => 'Сидр',
+                    'USR_LAST_NAME' => 'Сидоров',
+                    'USR_EMAIL' => null,
+                    'USR_MOBILE' => '79276222430',
+                    'MANAGER_EMAIL' => 'petrov@first.ru',
+                    'USR_UDF_USER_FIRED' => '0',
+                    'REGION_NAME' => 'Московская область',
+                    'CITY_NAME' => 'Москва',
+                    'ROLE' => 'Дирекция',
+                    'POSITION_NAME' => 'Генеральный директор',
+                    'TEAM_NAME' => 'Дирекция',
+                    'DEPARTAMENT_NAME' => 'ИТР',
+                    'ASSIGNMENT_NAME' => 'Default',
+                ],
+                [
+                    'USR_LOGIN' => 'test2_2',
+                    'USR_FIRST_NAME' => 'Кузьмин',
+                    'USR_LAST_NAME' => 'Кузьма',
+                    'USR_EMAIL' => 'kuzmin@first.ru',
+                    'USR_MOBILE' => '79276222440',
+                    'MANAGER_EMAIL' => 'petrov@first.ru',
+                    'USR_UDF_USER_FIRED' => '1',
+                    'REGION_NAME' => 'Московская область',
+                    'CITY_NAME' => 'Москва',
+                    'ROLE' => 'Дирекция',
+                    'POSITION_NAME' => 'Помощник директора',
+                    'TEAM_NAME' => 'Дирекция',
+                    'DEPARTAMENT_NAME' => 'ИТР',
+                    'ASSIGNMENT_NAME' => 'Default',
+                ],
+                [
+                    'USR_LOGIN' => 'test3_3',
+                    'USR_FIRST_NAME' => null,
+                    'USR_LAST_NAME' => null,
+                    'USR_EMAIL' => 'andreev@first.ru',
+                    'USR_MOBILE' => null,
+                    'MANAGER_EMAIL' => 'petrov@first.ru',
+                    'USR_UDF_USER_FIRED' => '0',
+                    'REGION_NAME' => 'Московская область',
+                    'CITY_NAME' => 'Москва',
+                    'ROLE' => 'Дирекция',
+                    'POSITION_NAME' => 'Помощник директора',
+                    'TEAM_NAME' => 'Дирекция',
+                    'DEPARTAMENT_NAME' => 'ИТР',
+                    'ASSIGNMENT_NAME' => 'Default',
+                ],
+            ]
+        ]
+    ];
+    private $log = [
+        [
+            'index' => '0_aaa___2',
+            'login' => 'test3',
+            'status' => 'error',
+            'errors' => [
+                [
+                    "code" => 1007,
+                    "field" => "first_name",
+                    "message" => "First name required"
+                ],
+                [
+                    "code" => 1007,
+                    "field" => "last_name",
+                    "message" => "Last name required"
+                ],
+            ]
+        ],
+        [
+            'index' => '1_bbb___0',
+            'login' => 'test2_1',
+            'status' => 'created',
+            'data' => [
+                'status' => 'active'
+            ]
+        ],
+        [
+            'index' => '0_aaa___0',
+            'login' => 'test1',
+            'status' => 'created',
+            'data' => [
+                'status' => 'active'
+            ]
+        ],
+        [
+            'index' => '0_aaa___1',
+            'login' => 'test2',
+            'status' => 'updated',
+            'data' => [
+                'status' => 'active'
+            ]
+        ],
+        [
+            'index' => '1_bbb___1',
+            'login' => 'test2_2',
+            'status' => 'unchanged',
+            'data' => [
+                'status' => 'active'
+            ]
+        ],
+        [
+            'index' => '1_bbb___2',
+            'login' => 'test3',
+            'status' => 'error',
+            'errors' => [
+                [
+                    "code" => 1007,
+                    "field" => "login",
+                    "message" => "Login already exists"
+                ],
+                [
+                    "code" => 1007,
+                    "field" => "first_name",
+                    "message" => "First name required"
+                ],
+                [
+                    "code" => 1007,
+                    "field" => "last_name",
+                    "message" => "Last name required"
+                ],
+                [
+                    "code" => 1007,
+                    "field" => "phone",
+                    "message" => "Phone required"
+                ],
+            ]
+        ],
+        [
+            'index' => null,
+            'login' => 'Amitin',
+            'status' => 'unchanged',
+            'data' => [
+                'status' => 'active'
+            ]
+        ],
+    ];
+    private $data = [];
+
+    public function change(array $usersData): UserPipelineData
+    {
+        return $this;
+    }
+
+    public function addSource(string $key, array $data): void
+    {
+    }
+
+    public function addLog(array $log): void
+    {
+    }
+
+    public function data(): array
+    {
+        return $this->data;
+    }
+
+    public function logs(): array
+    {
+        return $this->log;
+    }
+
+    public function sources(): array
+    {
+        return $this->sources;
+    }
+
+    public function dataFromSource(string $key): array
+    {
+        if(strpos($key, $this->keyDelimiter) === false) {
+            throw new RuntimeException(sprintf('Invalid data key %s', $key));
+        }
+
+        [$sourceKey, $dataKey] = explode($this->keyDelimiter, $key);
+
+        if(!isset($this->sources[$sourceKey]['data'][$dataKey])) {
+            throw new RuntimeException(sprintf('Source data with key %s not found', $key));
+        }
+
+        return $this->sources[$sourceKey]['data'][$dataKey];
+    }
+
+    public function sourceName(string $key): string
+    {
+        if(strpos($key, $this->keyDelimiter) !== false) {
+            [$key, ] = explode($this->keyDelimiter, $key);
+        }
+
+        if(!isset($this->sources[$key])) {
+            throw new RuntimeException(sprintf('Source with key %s not found', $key));
+        }
+
+        return $this->sources[$key]['name'];
+    }
+}
+
 $fs = new Filesystem(new Local(__DIR__ . '/tmp' ));
 
-$reportHeader = (new ReportHeader([
-    'status' => 'USER_ACTIVE',
-    'groups.region' => 'HOLDING_NAME',
-    'groups.city' => 'BE_NAME',
-    'groups.role' => 'DIVISION_NAME',
-    'groups.position' => 'USR_UDF_POSITIONNAME',
-    'groups.team' => 'TERRITORY_NAME',
-    'groups.department' => 'TEAM_NAME'
-], [
-    'withoutFields' => ['groups.assignment']]
-))->addForms([
-    '1' => 'USR_PATR',
-    '2' => 'COMP_DATE',
-    '3' => 'POS_DATE',
-    '4' => 'TABNUMBER'
-]);
+$reportHeader = new ReportHeader();
 $reportErrors = new ReportError();
 
 $successReport = new UserSuccessSyncReport($reportHeader);
 $errorReport = new UserErrorSyncReport($reportHeader, $reportErrors);
 
-$userExtractor = DataFromCsv::fromFile('tmp/users.csv');
-
-$syncLog = [
-    [
-        'index' => 1,
-        'login' => 'AMitin',
-        'status' => 'created',
-        'data' => [
-            'status' => 'active'
-        ]
-    ],
-    [
-        'index' => 2,
-        'login' => 'EMikhalev',
-        'status' => 'updated',
-        'data' => [
-            'status' => 'blocked'
-        ]
-    ],
-    [
-        'index' => 4,
-        'login' => 'SMelnikov',
-        'status' => 'created',
-        'data' => [
-            'status' => 'active'
-        ]
-    ],
-    [
-        'index' => 8,
-        'login' => 'MTroitskiy',
-        'status' => 'created',
-        'data' => [
-            'status' => 'blocked'
-        ]
-    ],
-    [
-        'index' => 8,
-        'login' => 'APetrov',
-        'status' => 'updated',
-        'data' => [
-            'status' => 'active'
-        ]
-    ],
-    [
-
-        "index" => 3,
-        "login" => "KKolentionok",
-        "status" => "error",
-        "errors" => [
-            [
-                "code" => 1007,
-                "field" => "first_name",
-                "message" => "First name required"
-            ],
-        ]
-    ],
-    [
-
-        "index" => 5,
-        "login" => "DKoroteev",
-        "status" => "error",
-        "errors" => [
-            [
-                "code" => 1007,
-                "field" => "first_name",
-                "message" => "First name required"
-            ],
-            [
-                "code" => 1007,
-                "field" => "last_name",
-                "message" => "Last name required"
-            ],
-        ]
-    ],
-    [
-
-        "index" => 6,
-        "login" => "Artamonov.ma",
-        "status" => "error",
-        "errors" => [
-            [
-                "code" => 1007,
-                "field" => "phone",
-                "message" => "Phone required"
-            ],
-        ]
-    ],
-    [
-
-        "index" => 7,
-        "login" => null,
-        "status" => "error",
-        "errors" => [
-            [
-                "code" => 1007,
-                "field" => "login",
-                "message" => "Login required"
-            ],
-        ]
-    ],
-
-];
-
-
 $typicalReportBuilder = new TypicalUserSyncReport(
-    $userExtractor,
     $fs,
     $successReport,
     $errorReport,
@@ -158,8 +294,10 @@ $typicalReportBuilder = new TypicalUserSyncReport(
     new ConsoleProfiler()
 );
 
+$pipeline = new UserSyncPipelineData();
+
 $typicalReportBuilder([
-    'prev' => $syncLog,
+    'prev' => $pipeline,
     'parameters' => [
         'successReportFilename' => 'done.csv',
         'errorReportFilename' => 'error.csv'

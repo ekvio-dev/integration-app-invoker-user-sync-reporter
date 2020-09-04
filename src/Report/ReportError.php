@@ -30,7 +30,8 @@ class ReportError
         'first_name_incorrect_data_format_please_try_again' => 'FIRST_NAME_NVALID',
         'first_name_first_name_must_be_cyrillic' => 'FIRST_NAME_NVALID',
         'last_name_incorrect_data_format_please_try_again' => 'LAST_NAME_NVALID',
-        'last_name_last_name_must_be_cyrillic' => 'LAST_NAME_NVALID'
+        'last_name_last_name_must_be_cyrillic' => 'LAST_NAME_NVALID',
+        'login_login_already_exists' => 'DUBLICAT'
     ];
 
     /**

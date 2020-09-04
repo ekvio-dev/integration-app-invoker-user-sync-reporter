@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Ekvio\Integration\Invoker\Report;
 
-use RuntimeException;
+use Ekvio\Integration\Contracts\User\UserPipelineData;
 
 /**
  * Class UserErrorSyncReport
@@ -12,7 +12,7 @@ use RuntimeException;
 class UserErrorSyncReport implements Reporter
 {
     private const ERROR_STATUS = 'error';
-    private const FILED_LOGIN = 'login';
+    private const FIELD_SOURCE = 'source';
     /**
      * @var ReportHeader
      */
@@ -39,83 +39,42 @@ class UserErrorSyncReport implements Reporter
     }
 
     /**
-     * @param array $data
+     * @param UserPipelineData $userPipelineData
      * @param array $options
      * @return ReportCollector
      */
-    public function build(array $data, array $options = []): ReportCollector
+    public function build(UserPipelineData $userPipelineData, array $options = []): ReportCollector
     {
-        if(!isset($data['users']) || !is_array($data['users'])) {
-            throw new RuntimeException('Parameter key "users" is not set or is not array');
-        }
+        $this->loadSyncErrorLog($userPipelineData->logs());
 
-        if(!isset($data['syncLog']) || !is_array($data['syncLog'])) {
-            throw new RuntimeException(sprintf('Parameter key "syncLog" is not set or is not array'));
-        }
-
-        $this->loadSyncErrorLog($data['syncLog']);
-
-        $content = [];
-        $loginField = $this->header->getHeaderByField(self::FILED_LOGIN);
         $headers = $this->header->headers();
         $reportErrors = $this->reportErrors->errors();
-        foreach ($data['users'] as $index => $user) {
 
-            if(!$this->hasError($loginField, $index, $user)) {
-                continue;
-            }
+        $content = [];
+        foreach ($this->syncErrorsLog as $index => $log) {
 
-            $username = null;
+            $user = $userPipelineData->dataFromSource($log['index']);
+            $sourceName = $userPipelineData->sourceName($log['index']);
+
             foreach ($headers as $header) {
-                if($loginField === $header) {
-                    $username = $user[$header];
+
+                $source = $this->header->getHeaderByField(self::FIELD_SOURCE);
+                if($header === $source) {
+                    $content[$index][] = $sourceName;
+                    continue;
                 }
+
                 $content[$index][] = $user[$header];
             }
 
-            $errors = $username ? $this->findErrorsByUsername($username) : $this->findErrorsByPosition($index);
+            $errors = $this->convertErrors($log['errors']);
             foreach ($reportErrors as $reportError) {
                 $content[$index][] = in_array($reportError, $errors, true) ? 1 : 0;
             }
+
         }
 
-        $header = array_merge($headers, $reportErrors);
-        return ReportDataCollector::create($header, $content);
-    }
-
-    /**
-     * @param string $loginField
-     * @param int $index
-     * @param array $user
-     * @return bool
-     */
-    private function hasError(string $loginField, int $index, array $user): bool
-    {
-        $username = $user[$loginField] ?? null;
-
-        if($username) {
-            return isset($this->syncErrorsLog[$username]);
-        }
-
-        return isset($this->syncErrorsLog[$index]);
-    }
-
-    /**
-     * @param string $username
-     * @return array
-     */
-    private function findErrorsByUsername(string $username): array
-    {
-        return $this->convertErrors($this->syncErrorsLog[$username] ?? []);
-    }
-
-    /**
-     * @param int $position
-     * @return array
-     */
-    private function findErrorsByPosition(int $position): array
-    {
-        return $this->convertErrors($this->syncErrorsLog[$position] ?? []);
+        return ReportDataCollector::create(array_merge($headers, $reportErrors), $content);
     }
 
     /**
@@ -139,16 +98,12 @@ class UserErrorSyncReport implements Reporter
     {
         foreach ($logs as $log) {
             if($log['status'] === self::ERROR_STATUS) {
-                $key = $log['login'] ?? $log['index'];
-                if(!$key) {
-                    continue;
-                }
-
-                $errors = $log['errors'] ?? null;
-                if($errors) {
-                    $this->syncErrorsLog[$key] = $errors;
-                }
+                $this->syncErrorsLog[] = $log;
             }
         }
+
+        usort($this->syncErrorsLog, function ($a, $b) {
+            return $a['index'] <=> $b['index'];
+        });
     }
 }
