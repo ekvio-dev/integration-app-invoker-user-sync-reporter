@@ -86,7 +86,7 @@ class ReportError
         );
 
         if($this->logUnknownMessage && !isset($this->errorMap[$key])) {
-            fwrite(STDOUT, sprintf('Field: %s. Message: %s. Key: %s' . PHP_EOL, $field, $message, $key));
+            fwrite(STDOUT, sprintf('Undefined error validation key: field [%s], message [%s], key [%s]' . PHP_EOL, $field, $message, $key));
         }
 
         return $this->errorMap[$key] ?? self::UNKNOWN_ERROR;
