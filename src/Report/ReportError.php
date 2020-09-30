@@ -9,7 +9,17 @@ namespace Ekvio\Integration\Invoker\Report;
  */
 class ReportError
 {
+    /**
+     * @var string
+     */
     private const UNKNOWN_ERROR = 'UNKWN_ERR';
+    /**
+     * @var bool
+     */
+    private $logUnknownMessage = false;
+    /**
+     * @var array|string[]
+     */
     private $errorMap = [
         'login_login_required' => 'LOGIN_NVALID',
         'login_значение_логин_неверно' => 'LOGIN_NVALID',
@@ -39,11 +49,16 @@ class ReportError
     /**
      * ReportErrorsHeader constructor.
      * @param array $errorMap
+     * @param array $config
      */
-    public function __construct(array $errorMap = [])
+    public function __construct(array $errorMap = [], array $config = [])
     {
         if($errorMap) {
             $this->errorMap = array_merge($this->errorMap, $errorMap);
+        }
+
+        if(isset($config['logUnknownMessage']) && is_bool($config['logUnknownMessage'])) {
+            $this->logUnknownMessage = $config['logUnknownMessage'];
         }
     }
 
@@ -69,6 +84,10 @@ class ReportError
             mb_strtolower($field),
             mb_strtolower($replacedMsg)
         );
+
+        if($this->logUnknownMessage && !isset($this->errorMap[$key])) {
+            fwrite(STDOUT, sprintf('Field: %s. Message: %s. Key: %s' . PHP_EOL, $field, $message, $key));
+        }
 
         return $this->errorMap[$key] ?? self::UNKNOWN_ERROR;
     }
