@@ -44,6 +44,8 @@ class ReportError
         'login_login_already_exists' => 'DUBLICAT',
         'phone_phone_number_must_be_min_10_numbers' => 'PHONE_NVALID',
         'email_email_is_not_valid' => 'EMAIL_NVALID',
+        'chief_email_manager_s_e_mail_не_является_правильным_email_адресом' => 'CHIEF_EMAIL_NVALID'
+
     ];
 
     /**
@@ -78,7 +80,7 @@ class ReportError
      */
     public function getError(string $field, string $message): string
     {
-        $replacedMsg = trim(preg_replace("([ '.,\"\-«»]+)", '_', $message), '_');
+        $replacedMsg = trim(preg_replace("/([ '.,\"\-«»]+)/u", '_', $message), '_');
 
         $key = sprintf('%s_%s',
             mb_strtolower($field),
