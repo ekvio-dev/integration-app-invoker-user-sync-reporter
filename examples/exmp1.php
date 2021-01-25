@@ -62,7 +62,7 @@ class UserSyncPipelineData implements UserPipelineData
                     'ASSIGNMENT_NAME' => 'Default',
                 ],
                 [
-                    'USR_LOGIN' => 'test3',
+                    'USR_LOGIN' => 'test1',
                     'USR_FIRST_NAME' => null,
                     'USR_LAST_NAME' => null,
                     'USR_EMAIL' => 'andreev@first.ru',
@@ -136,18 +136,18 @@ class UserSyncPipelineData implements UserPipelineData
     private $log = [
         [
             'index' => '0_aaa___2',
-            'login' => 'test3',
+            'login' => 'test1',
             'status' => 'error',
             'errors' => [
                 [
-                    "code" => 1007,
-                    "field" => "first_name",
-                    "message" => "First name required"
+                    'code' => 1007,
+                    'field' => 'first_name',
+                    'message' => 'First name required'
                 ],
                 [
-                    "code" => 1007,
-                    "field" => "last_name",
-                    "message" => "Last name required"
+                    'code' => 1007,
+                    'field' => 'last_name',
+                    'message' => 'Last name required'
                 ],
             ]
         ],
@@ -191,7 +191,8 @@ class UserSyncPipelineData implements UserPipelineData
                 [
                     "code" => 1007,
                     "field" => "login",
-                    "message" => "Login already exists"
+                    "message" => "Login already exists",
+                    "extra" => "hr1.csv"
                 ],
                 [
                     "code" => 1007,

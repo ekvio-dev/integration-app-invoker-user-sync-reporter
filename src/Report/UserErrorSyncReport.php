@@ -13,6 +13,8 @@ class UserErrorSyncReport implements Reporter
 {
     private const ERROR_STATUS = 'error';
     private const FIELD_SOURCE = 'source';
+    private const ERROR_VALUE = '1';
+    private const NO_ERROR_VALUE = '0';
     /**
      * @var ReportHeader
      */
@@ -68,13 +70,34 @@ class UserErrorSyncReport implements Reporter
             }
 
             $errors = $this->convertErrors($log['errors']);
+            $errorKeys = array_keys($errors);
+
             foreach ($reportErrors as $reportError) {
-                $content[$index][] = in_array($reportError, $errors, true) ? 1 : 0;
+                if(!in_array($reportError, $errorKeys, true)) {
+                    $content[$index][] = self::NO_ERROR_VALUE;
+                    continue;
+                }
+
+                $content[$index][] = $this->renderErrorValue($reportError, $errors[$reportError]);
             }
 
         }
 
         return ReportDataCollector::create(array_merge($headers, $reportErrors), $content);
+    }
+
+    /**
+     * @param string $errorKey
+     * @param array $error
+     * @return string
+     */
+    private function renderErrorValue(string $errorKey, array $error): string
+    {
+        if($errorKey === 'DUBLICAT') {
+            return $error['extra'] ?? self::ERROR_VALUE;
+        }
+
+        return self::ERROR_VALUE;
     }
 
     /**
@@ -85,7 +108,8 @@ class UserErrorSyncReport implements Reporter
     {
         $data = [];
         foreach ($errors as $error) {
-            $data[] = $this->reportErrors->getError($error['field'], $error['message']);
+            $key = $this->reportErrors->getError($error['field'], $error['message']);
+            $data[$key] = $error;
         }
 
         return $data;

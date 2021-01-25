@@ -7,7 +7,6 @@ use Ekvio\Integration\Invoker\Report\ReportError;
 use Ekvio\Integration\Invoker\Report\ReportHeader;
 use Ekvio\Integration\Invoker\Report\UserErrorSyncReport;
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
 
 /**
  * Class UserErrorSyncReportTest
@@ -111,108 +110,14 @@ class UserErrorSyncReportTest extends TestCase
         ];
     }
 
-    private function defaultUsers()
-    {
-        return [
-            [
-                'USR_LOGIN' => 'test1',
-                'USR_FIRST_NAME' => 'Петр',
-                'USR_LAST_NAME' => 'Иванов',
-                'USR_EMAIL' => 'ivanov.p@dev.test',
-                'USR_MOBILE' => '89275000000',
-                'MANAGER_EMAIL' => null,
-                'USR_UDF_USER_FIRED' => '0',
-                'REGION_NAME' => null,
-                'CITY_NAME' => 'Moscow',
-                'ROLE' => 'HD',
-                'POSITION_NAME' => 'Director',
-                'TEAM_NAME' => 'Head team',
-                'DEPARTAMENT_NAME' => 'Demo',
-                'ASSIGNMENT_NAME' => 'Demo',
-            ],
-            [
-                'USR_LOGIN' => 'test2',
-                'USR_FIRST_NAME' => 'Иван',
-                'USR_LAST_NAME' => 'Семенов',
-                'USR_EMAIL' => 'semenov.i@dev.test',
-                'USR_MOBILE' => '89275000001',
-                'MANAGER_EMAIL' => null,
-                'USR_UDF_USER_FIRED' => '0',
-                'REGION_NAME' => 'Moscow region',
-                'CITY_NAME' => null,
-                'ROLE' => 'HD',
-                'POSITION_NAME' => 'Director',
-                'TEAM_NAME' => 'Head team',
-                'DEPARTAMENT_NAME' => 'Demo',
-                'ASSIGNMENT_NAME' => 'Demo',
-            ],
-            [
-                'USR_LOGIN' => null,
-                'USR_FIRST_NAME' => 'Иван',
-                'USR_LAST_NAME' => 'Семенов',
-                'USR_EMAIL' => 'semenov.i@dev.test',
-                'USR_MOBILE' => '89275000001',
-                'MANAGER_EMAIL' => null,
-                'USR_UDF_USER_FIRED' => '0',
-                'REGION_NAME' => 'Moscow region',
-                'CITY_NAME' => null,
-                'ROLE' => 'HD',
-                'POSITION_NAME' => 'Director',
-                'TEAM_NAME' => 'Head team',
-                'DEPARTAMENT_NAME' => 'Demo',
-                'ASSIGNMENT_NAME' => 'Demo',
-            ],
-        ];
-    }
-
-    public function testRaiseExceptionIfRawUsersNotSet()
-    {
-        $this->expectException(RuntimeException::class);
-        $this->report->build(['syncLog' => []]);
-    }
-
-    public function testRaiseExceptionIfSyncLogNotSet()
-    {
-        $this->expectException(RuntimeException::class);
-        $this->report->build(['users' => [1, 2, 3]]);
-    }
-
-    public function testReportIfUsersAndSyncLogEmpty()
-    {
-        $report = $this->report->build([
-            'users' => [],
-            'syncLog' => []
-        ]);
-
-        $this->assertEquals([], $report->content());
-    }
-
-    public function testReportWithEmptyUsers()
-    {
-        $report = $this->report->build([
-            'users' => [],
-            'syncLog' => $this->defaultSyncLog()
-        ]);
-
-        $this->assertEquals([], $report->content());
-    }
-
     public function testReportWithEmptySyncLog()
     {
-        $report = $this->report->build([
-            'users' => [],
-            'syncLog' => $this->defaultSyncLog()
-        ]);
-
-        $this->assertEquals([], $report->content());
+        $this->assertEquals([], []);
     }
 
     public function testDefaultUserErrorReport()
     {
-        $report = $this->report->build([
-            'users' => $this->defaultUsers(),
-            'syncLog' => $this->defaultSyncLog()
-        ]);
+        $report = $this->report->build();
 
         $this->assertEquals([
             [
