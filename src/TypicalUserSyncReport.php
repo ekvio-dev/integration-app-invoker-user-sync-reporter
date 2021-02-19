@@ -17,28 +17,28 @@ use RuntimeException;
  */
 class TypicalUserSyncReport implements Invoker
 {
-    private const NAME = 'User sync aggregate report';
+    protected const NAME = 'User sync aggregate report';
 
     /**
      * @var FilesystemInterface
      */
-    private $fs;
+    protected $fs;
     /**
      * @var Reporter
      */
-    private $successReport;
+    protected $successReport;
     /**
      * @var Reporter
      */
-    private $errorReport;
+    protected $errorReport;
     /**
      * @var ReportConverter
      */
-    private $converter;
+    protected $converter;
     /**
      * @var Profiler
      */
-    private $profiler;
+    protected $profiler;
 
     public function __construct(
         FilesystemInterface  $fs,
@@ -92,6 +92,8 @@ class TypicalUserSyncReport implements Invoker
         $data = $this->converter->convert($errorReport);
         $this->profiler->profile(sprintf('Write error report data to %s', $errorReportFilename));
         $this->writeReportToFile($errorReportFilename, $data);
+
+        return $userSyncPipelineData;
     }
 
     /**
