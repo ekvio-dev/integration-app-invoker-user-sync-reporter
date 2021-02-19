@@ -100,7 +100,7 @@ class TypicalUserSyncReport implements Invoker
      * @param string $filename
      * @param string $data
      */
-    private function writeReportToFile(string $filename, string $data): void
+    protected function writeReportToFile(string $filename, string $data): void
     {
         if($this->fs->put($filename, $data) === false) {
             throw new RuntimeException(sprintf('Write error in %...', $filename));
