@@ -28,6 +28,7 @@ class UserErrorSyncReport implements Reporter
      */
     private $syncErrorsLog = [];
 
+    private $groupErrors = [];
 
     /**
      * UserErrorSyncReport constructor.
@@ -51,6 +52,7 @@ class UserErrorSyncReport implements Reporter
 
         $headers = $this->header->headers();
         $reportErrors = $this->reportErrors->errors();
+        $this->groupErrors = $this->reportErrors->errors(true);
 
         $content = [];
         foreach ($this->syncErrorsLog as $index => $log) {
@@ -78,7 +80,7 @@ class UserErrorSyncReport implements Reporter
                     continue;
                 }
 
-                $content[$index][] = $this->renderErrorValue($reportError, $errors[$reportError]);
+                $content[$index][] = $this->render($reportError, $errors[$reportError]);
             }
 
         }
@@ -88,16 +90,30 @@ class UserErrorSyncReport implements Reporter
 
     /**
      * @param string $errorKey
-     * @param array $error
+     * @param array $errors
      * @return string
      */
-    private function renderErrorValue(string $errorKey, array $error): string
+    private function render(string $errorKey, array $errors): string
     {
         if($errorKey === 'DUBLICAT') {
-            return $error['extra'] ?? self::ERROR_VALUE;
+            return $errors[0]['extra'] ?? self::ERROR_VALUE;
+        }
+
+        if(in_array($errorKey, $this->groupErrors, true)) {
+            return $this->renderGroupErrors($errors);
         }
 
         return self::ERROR_VALUE;
+    }
+
+    private function renderGroupErrors(array $errors): string
+    {
+        $data = '';
+        foreach ($errors as $error) {
+            [$message,] = explode('.', $error['message']);
+            $data .= $message . '. ';
+        }
+        return trim($data, " ");
     }
 
     /**
@@ -109,7 +125,7 @@ class UserErrorSyncReport implements Reporter
         $data = [];
         foreach ($errors as $error) {
             $key = $this->reportErrors->getError($error['field'], $error['message']);
-            $data[$key] = $error;
+            $data[$key][] = $error;
         }
 
         return $data;

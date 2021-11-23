@@ -22,21 +22,23 @@ class ReportErrorTest extends TestCase
     {
         $error = new ReportError();
         $this->assertEquals('PHONE_NUNIQ', $error->getError('phone', 'Value is not unique.'));
-        $this->assertEquals('UNKWN_ERR', $error->getError('unknown', 'Error not exist'));
+        $this->assertEquals('UNKNWN_ERR', $error->getError('unknown', 'Error not exist'));
     }
 
     public function testAddedErrorToReportError()
     {
         $error = new ReportError([
-            'tabnumber_tabnumber_required' => 'TABNUMBER_NVALID'
+            'errorMap' => [
+                'tabnumber_tabnumber_required' => 'TABNUMBER_NVALID'
+            ]
         ]);
         $this->assertEquals('TABNUMBER_NVALID', $error->getError('tabnumber', 'Tabnumber required'));
-        $this->assertEquals('UNKWN_ERR', $error->getError('unknown', 'Error not exist'));
+        $this->assertEquals('UNKNWN_ERR', $error->getError('unknown', 'Error not exist'));
     }
 
     public function testUnknownErrorInHeader()
     {
         $error = new ReportError();
-        $this->assertTrue(in_array('UNKWN_ERR', $error->errors()));
+        $this->assertTrue(in_array('UNKNWN_ERR', $error->errors()));
     }
 }

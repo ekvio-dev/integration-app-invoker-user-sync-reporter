@@ -48,8 +48,15 @@ class ReportHeader
      */
     public function __construct(array $headerMap = [], array $options = [])
     {
-        if($headerMap) {
-            $this->headerMap = array_merge($this->headerMap, $headerMap);
+        foreach ($headerMap as $key => $value) {
+            if(is_array($value)) {
+                foreach ($value as $innerKey => $innerValue) {
+                    $this->headerMap[sprintf('%s.%s', $key, $innerKey)] = $innerValue;
+                }
+                continue;
+            }
+
+            $this->headerMap[$key] = $value;
         }
 
         if(isset($options['withoutFields']) && is_array($options['withoutFields'])) {

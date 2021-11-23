@@ -117,6 +117,8 @@ class UserErrorSyncReportTest extends TestCase
 
     public function testDefaultUserErrorReport()
     {
+        $this->markTestSkipped('must be revisited.');
+
         $report = $this->report->build();
 
         $this->assertEquals([

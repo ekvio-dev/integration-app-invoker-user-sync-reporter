@@ -16,6 +16,7 @@ class ReportHeaderTest extends TestCase
     private function headerMap(): array
     {
         return [
+            'source' => 'SOURCE',
             'login' => 'USR_LOGIN',
             'first_name' => 'USR_FIRST_NAME',
             'last_name' => 'USR_LAST_NAME',

@@ -141,6 +141,26 @@ class UserSyncPipelineData implements UserPipelineData
             'errors' => [
                 [
                     'code' => 1007,
+                    'field' => 'groups',
+                    'message' => 'Group path invalid format. Group index: region'
+                ],
+                [
+                    'code' => 1007,
+                    'field' => 'groups',
+                    'message' => 'Group path greater then. Group index: region'
+                ],
+                [
+                    'code' => 1007,
+                    'field' => 'groups',
+                    'message' => 'Group path greater then. Group index: role'
+                ],
+                [
+                    'code' => 1007,
+                    'field' => 'groups',
+                    'message' => 'Group path greater then. Group index: unknown'
+                ],
+                [
+                    'code' => 1007,
                     'field' => 'first_name',
                     'message' => 'First name required'
                 ],
@@ -282,7 +302,10 @@ class UserSyncPipelineData implements UserPipelineData
 $fs = new Filesystem(new Local(__DIR__ . '/tmp' ));
 
 $reportHeader = new ReportHeader();
-$reportErrors = new ReportError();
+$reportErrors = new ReportError([
+    'errorGroup' => ['region' => 'ERROR_OS'],
+    'logUnknownMessage' => true
+]);
 
 $successReport = new UserSuccessSyncReport($reportHeader);
 $errorReport = new UserErrorSyncReport($reportHeader, $reportErrors);
