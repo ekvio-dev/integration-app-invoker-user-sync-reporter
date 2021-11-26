@@ -14,7 +14,7 @@ class ReportHeader
     /**
      * @var array|string[]
      */
-    private $attributesMap = [];
+    private $attributesMap = ['source' => 'SOURCE'];
 
     /**
      * @var array

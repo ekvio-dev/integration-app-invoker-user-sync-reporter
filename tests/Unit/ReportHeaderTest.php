@@ -37,7 +37,7 @@ class ReportHeaderTest extends TestCase
     public function testDefaultReportHeader()
     {
         $header = new ReportHeader([]);
-        $this->assertEquals([], $header->headers());
+        $this->assertEquals(['SOURCE'], $header->headers());
     }
 
     public function testAddFormsToHeaders()
@@ -51,7 +51,7 @@ class ReportHeaderTest extends TestCase
         $headerMap['forms.1'] = 'OTCH';
         $headerMap['forms.100'] = 'HIRE_DATE';
 
-        $this->assertEquals(['USER_LOGIN', 'OTCH', 'HIRE_DATE'], $header->headers());
+        $this->assertEquals(['SOURCE','USER_LOGIN', 'OTCH', 'HIRE_DATE'], $header->headers());
     }
 
     public function testGetFieldByHeader()
