@@ -87,7 +87,7 @@ class ReportError
         }
 
         if(isset($config['errorGroup']) && is_array($config['errorGroup'])) {
-            $this->errorGroup = array_merge($this->errorGroup, $config['errorGroup']);
+            $this->errorGroup = $config['errorGroup'];
         }
 
         if(isset($config['logUnknownMessage']) && is_bool($config['logUnknownMessage'])) {

@@ -30,10 +30,15 @@ class ReportErrorTest extends TestCase
         $error = new ReportError([
             'errorMap' => [
                 'tabnumber_tabnumber_required' => 'TABNUMBER_NVALID'
+            ],
+            'errorGroup' => [
+                'path_1' => 'ERROR_PATH_1',
+                'path_2' => 'ERROR_PATH_2'
             ]
         ]);
         $this->assertEquals('TABNUMBER_NVALID', $error->getError('tabnumber', 'Tabnumber required'));
         $this->assertEquals('UNKNWN_ERR', $error->getError('unknown', 'Error not exist'));
+        $this->assertEquals(['ERROR_PATH_1', 'ERROR_PATH_2'], $error->errors(true));
     }
 
     public function testUnknownErrorInHeader()
