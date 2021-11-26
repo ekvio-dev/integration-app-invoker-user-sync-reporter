@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace Unit;
 
-use Ekvio\Integration\Invoker\Report\ReportError;
-use Ekvio\Integration\Invoker\Report\ReportHeader;
 use Ekvio\Integration\Invoker\Report\UserErrorSyncReport;
 use PHPUnit\Framework\TestCase;
 
@@ -14,17 +12,6 @@ use PHPUnit\Framework\TestCase;
  */
 class UserErrorSyncReportTest extends TestCase
 {
-    /**
-     * @var UserErrorSyncReport
-     */
-    private $report;
-
-    protected function setUp(): void
-    {
-        $this->report = new UserErrorSyncReport(new ReportHeader(), new ReportError());
-        parent::setUp();
-    }
-
     private function defaultSyncLog(): array
     {
         return [
@@ -108,71 +95,5 @@ class UserErrorSyncReportTest extends TestCase
                 ]
             ],
         ];
-    }
-
-    public function testReportWithEmptySyncLog()
-    {
-        $this->assertEquals([], []);
-    }
-
-    public function testDefaultUserErrorReport()
-    {
-        $this->markTestSkipped('must be revisited.');
-
-        $report = $this->report->build();
-
-        $this->assertEquals([
-            [
-                'test1',
-                'Петр',
-                'Иванов',
-                'ivanov.p@dev.test',
-                '89275000000',
-                null,
-                '0',
-                null,
-                'Moscow',
-                'HD',
-                'Director',
-                'Head team',
-                'Demo',
-                'Demo',
-                0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-            ],
-            [
-                'test2',
-                'Иван',
-                'Семенов',
-                'semenov.i@dev.test',
-                '89275000001',
-                null,
-                '0',
-                'Moscow region',
-                null,
-                'HD',
-                'Director',
-                'Head team',
-                'Demo',
-                'Demo',
-                0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1
-            ],
-            [
-                null,
-                'Иван',
-                'Семенов',
-                'semenov.i@dev.test',
-                '89275000001',
-                null,
-                '0',
-                'Moscow region',
-                null,
-                'HD',
-                'Director',
-                'Head team',
-                'Demo',
-                'Demo',
-                1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-            ]
-        ], $report->content());
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Ekvio\Integration\Invoker\Report;
 
 use Ekvio\Integration\Contracts\User\UserPipelineData;
+use RuntimeException;
 
 /**
  * Class UserErrorSyncReport
@@ -66,6 +67,10 @@ class UserErrorSyncReport implements Reporter
                 if($header === $source) {
                     $content[$index][] = $sourceName;
                     continue;
+                }
+
+                if(!array_key_exists($header, $user)) {
+                    throw new RuntimeException(sprintf('For user from %s field %s not found.', $sourceName, $header));
                 }
 
                 $content[$index][] = $user[$header];

@@ -14,23 +14,7 @@ class ReportHeader
     /**
      * @var array|string[]
      */
-    private $headerMap = [
-        'source' => 'SOURCE',
-        'login' => 'USR_LOGIN',
-        'first_name' => 'USR_FIRST_NAME',
-        'last_name' => 'USR_LAST_NAME',
-        'email' => 'USR_EMAIL',
-        'phone' => 'USR_MOBILE',
-        'chief_email' => 'MANAGER_EMAIL',
-        'status' => 'USR_UDF_USER_FIRED',
-        'groups.region' => 'REGION_NAME',
-        'groups.city' => 'CITY_NAME',
-        'groups.role' => 'ROLE',
-        'groups.position' => 'POSITION_NAME',
-        'groups.team' => 'TEAM_NAME',
-        'groups.department' => 'DEPARTAMENT_NAME',
-        'groups.assignment' => 'ASSIGNMENT_NAME',
-    ];
+    private $attributesMap = [];
 
     /**
      * @var array
@@ -43,20 +27,20 @@ class ReportHeader
 
     /**
      * ReportSuccessHeader constructor.
-     * @param array $headerMap
+     * @param array $attributesMap
      * @param array $options
      */
-    public function __construct(array $headerMap = [], array $options = [])
+    public function __construct(array $attributesMap, array $options = [])
     {
-        foreach ($headerMap as $key => $value) {
+        foreach ($attributesMap as $key => $value) {
             if(is_array($value)) {
                 foreach ($value as $innerKey => $innerValue) {
-                    $this->headerMap[sprintf('%s.%s', $key, $innerKey)] = $innerValue;
+                    $this->attributesMap[sprintf('%s.%s', $key, $innerKey)] = $innerValue;
                 }
                 continue;
             }
 
-            $this->headerMap[$key] = $value;
+            $this->attributesMap[$key] = $value;
         }
 
         if(isset($options['withoutFields']) && is_array($options['withoutFields'])) {
@@ -87,7 +71,7 @@ class ReportHeader
     public function headers(): array
     {
         if($this->withoutFields) {
-            $headers = $this->headerMap;
+            $headers = $this->attributesMap;
             $forms = $this->formMap;
             foreach ($this->withoutFields as $field) {
                 unset($headers[$field]);
@@ -97,7 +81,7 @@ class ReportHeader
             return array_merge(array_values($headers), array_values($forms));
         }
 
-        return array_merge(array_values($this->headerMap), array_values($this->formMap));
+        return array_merge(array_values($this->attributesMap), array_values($this->formMap));
     }
 
     /**
@@ -106,7 +90,7 @@ class ReportHeader
      */
     public function getFieldByHeader(string $header): string
     {
-        $flip = array_flip(array_merge($this->headerMap, $this->formMap));
+        $flip = array_flip(array_merge($this->attributesMap, $this->formMap));
 
         if(!isset($flip[$header])) {
             throw new RuntimeException(sprintf('No map field for %s key', $header));
@@ -121,7 +105,7 @@ class ReportHeader
      */
     public function getHeaderByField(string $field): string
     {
-        $headers = array_merge($this->headerMap, $this->formMap);
+        $headers = array_merge($this->attributesMap, $this->formMap);
 
         if(!isset($headers[$field])) {
             throw new RuntimeException(sprintf('No map header for %s field', $field));

@@ -301,9 +301,37 @@ class UserSyncPipelineData implements UserPipelineData
 
 $fs = new Filesystem(new Local(__DIR__ . '/tmp' ));
 
-$reportHeader = new ReportHeader();
+$attributeGroupMap = [
+    'region' => 'REGION_NAME',
+    'role' => 'ROLE',
+    'position' => 'POSITION_NAME',
+    'team' => 'TEAM_NAME',
+    'department' => 'DEPARTAMENT_NAME',
+    'assignment' => 'ASSIGNMENT_NAME',
+];
+
+$attributesMap =  [
+    'source' => 'SOURCE',
+    'login' => 'USR_LOGIN',
+    'first_name' => 'USR_FIRST_NAME',
+    'last_name' => 'USR_LAST_NAME',
+    'email' => 'USR_EMAIL',
+    'phone' => 'USR_MOBILE',
+    'chief_email' => 'MANAGER_EMAIL',
+    'status' => 'USR_UDF_USER_FIRED',
+    'groups' => $attributeGroupMap
+];
+
+$reportHeader = new ReportHeader($attributesMap);
 $reportErrors = new ReportError([
-    'errorGroup' => ['region' => 'ERROR_OS'],
+    'errorGroup' => [
+        'region' => 'ERROR_OS',
+        'role' => 'ERROR_ROLE',
+        'position' => 'ERROR_POSITION_NAME',
+        'team' => 'ERROR_TEAM_NAME',
+        'department' => 'ERROR_DEPARTAMENT_NAME',
+        'assignment' => 'ERROR_ASSIGNMENT_NAME',
+    ],
     'logUnknownMessage' => true
 ]);
 
