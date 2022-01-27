@@ -130,10 +130,12 @@ class ReportError
             return $errorCode;
         }
 
-        [, $code] = explode(':', $message);
-        if($field === 'groups' && trim($code)) {
-            if(isset($this->errorGroup[trim($code)])) {
-                return $this->errorGroup[trim($code)];
+        if(strpos($message, ':') !== false) {
+            [, $code] = explode(':', $message);
+            if($field === 'groups' && $code) {
+                if(isset($this->errorGroup[trim($code)])) {
+                    return $this->errorGroup[trim($code)];
+                }
             }
         }
 
