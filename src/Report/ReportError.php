@@ -59,10 +59,6 @@ class ReportError
         'phone_phone_number_must_be_min_10_numbers' => 'PHONE_NVALID',
         'email_email_is_not_valid' => 'EMAIL_NVALID',
         'chief_email_manager_s_e_mail_не_является_правильным_email_адресом' => 'CHIEF_EMAIL_NVALID',
-        'level4_level4_required' => 'LEVEL4_EMPT',
-        'level5_level5_required' => 'LEVEL5_EMPT',
-        'comp_date_invalid_comp_date' => 'COMP_DATE_NVALID',
-        'fire_date_invalid_fire_date' => 'FIRE_DATE_NVALID',
         'phone_phone_is_required_only_numbers' => 'PHONE_NVALID',
     ];
 
