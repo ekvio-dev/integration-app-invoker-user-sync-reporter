@@ -9,8 +9,8 @@ use Ekvio\Integration\Invoker\Report\ReportHeader;
 use Ekvio\Integration\Invoker\Report\UserErrorSyncReport;
 use Ekvio\Integration\Invoker\Report\UserSuccessSyncReport;
 use Ekvio\Integration\Invoker\TypicalUserSyncReport;
-use League\Flysystem\Adapter\Local;
 use League\Flysystem\Filesystem;
+use League\Flysystem\Local\LocalFilesystemAdapter;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -299,7 +299,7 @@ class UserSyncPipelineData implements UserPipelineData
     }
 }
 
-$fs = new Filesystem(new Local(__DIR__ . '/tmp' ));
+$fs = new Filesystem(new LocalFilesystemAdapter(__DIR__ . '/tmp' ));
 
 $attributeGroupMap = [
     'region' => 'REGION_NAME',

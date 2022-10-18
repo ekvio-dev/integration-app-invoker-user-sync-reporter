@@ -8,7 +8,7 @@ use Ekvio\Integration\Contracts\Profiler;
 use Ekvio\Integration\Contracts\User\UserPipelineData;
 use Ekvio\Integration\Invoker\Report\ReportConverter;
 use Ekvio\Integration\Invoker\Report\Reporter;
-use League\Flysystem\FilesystemInterface;
+use League\Flysystem\FilesystemOperator;
 use RuntimeException;
 
 /**
@@ -19,29 +19,14 @@ class TypicalUserSyncReport implements Invoker
 {
     protected const NAME = 'User sync aggregate report';
 
-    /**
-     * @var FilesystemInterface
-     */
-    protected $fs;
-    /**
-     * @var Reporter
-     */
-    protected $successReport;
-    /**
-     * @var Reporter
-     */
-    protected $errorReport;
-    /**
-     * @var ReportConverter
-     */
-    protected $converter;
-    /**
-     * @var Profiler
-     */
-    protected $profiler;
+    protected FilesystemOperator $fs;
+    protected Reporter $successReport;
+    protected Reporter $errorReport;
+    protected ReportConverter $converter;
+    protected Profiler $profiler;
 
     public function __construct(
-        FilesystemInterface  $fs,
+        FilesystemOperator  $fs,
         Reporter $successReport,
         Reporter $errorReport,
         ReportConverter $converter,
@@ -54,9 +39,6 @@ class TypicalUserSyncReport implements Invoker
         $this->profiler = $profiler;
     }
 
-    /**
-     * @param array $arguments
-     */
     public function __invoke(array $arguments = [])
     {
         if(!isset($arguments['prev'])) {
@@ -84,32 +66,18 @@ class TypicalUserSyncReport implements Invoker
         $this->profiler->profile('Convert report...');
         $data = $this->converter->convert($successReport);
         $this->profiler->profile(sprintf('Write success report data to %s', $successReportFilename));
-        $this->writeReportToFile($successReportFilename, $data);
+        $this->fs->write($successReportFilename, $data);
 
         $this->profiler->profile('Build error report....');
         $errorReport = $this->errorReport->build($userSyncPipelineData);
         $this->profiler->profile('Convert error report');
         $data = $this->converter->convert($errorReport);
         $this->profiler->profile(sprintf('Write error report data to %s', $errorReportFilename));
-        $this->writeReportToFile($errorReportFilename, $data);
+        $this->fs->write($errorReportFilename, $data);
 
         return $userSyncPipelineData;
     }
 
-    /**
-     * @param string $filename
-     * @param string $data
-     */
-    protected function writeReportToFile(string $filename, string $data): void
-    {
-        if($this->fs->put($filename, $data) === false) {
-            throw new RuntimeException(sprintf('Write error in %...', $filename));
-        }
-    }
-
-    /**
-     * @return string
-     */
     public function name(): string
     {
         return self::NAME;
