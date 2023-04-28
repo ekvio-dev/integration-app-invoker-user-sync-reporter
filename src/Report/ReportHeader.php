@@ -14,16 +14,16 @@ class ReportHeader
     /**
      * @var array|string[]
      */
-    private $attributesMap = ['source' => 'SOURCE'];
+    protected $attributesMap = ['source' => 'SOURCE'];
 
     /**
      * @var array
      */
-    private $formMap = [];
+    protected $formMap = [];
     /**
      * @var array
      */
-    private $withoutFields = [];
+    protected $withoutFields = [];
 
     /**
      * ReportSuccessHeader constructor.

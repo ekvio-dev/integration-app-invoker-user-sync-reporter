@@ -12,15 +12,15 @@ class ReportError
     /**
      * @var string
      */
-    private const UNKNOWN_ERROR = 'UNKNWN_ERR';
+    protected const UNKNOWN_ERROR = 'UNKNWN_ERR';
     /**
      * @var bool
      */
-    private $logUnknownMessage = false;
+    protected $logUnknownMessage = false;
     /**
      * @var array|string[]
      */
-    private $errorMap = [
+    protected $errorMap = [
         'login_login_required' => 'LOGIN_NVALID',
         'login_значение_логин_неверно' => 'LOGIN_NVALID',
         'login_login_is_invalid' => 'LOGIN_NVALID',
@@ -66,7 +66,7 @@ class ReportError
         'phone_phone_is_required_only_numbers' => 'PHONE_NVALID',
     ];
 
-    private $errorGroup = [
+    protected $errorGroup = [
         'region' => 'ERROR_REGION_NAME',
         'role' => 'ERROR_ROLE',
         'position' => 'ERROR_POSITION_NAME',
