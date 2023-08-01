@@ -82,6 +82,14 @@ class ReportError
      */
     public function __construct(array $config = [])
     {
+        if (isset($config['cleanErrorMap'])) {
+            $this->errorMap = [];
+        }
+
+        if (isset($config['cleanErrorGroup'])) {
+            $this->errorGroup = [];
+        }
+
         if(isset($config['errorMap']) && is_array($config['errorMap'])) {
             $this->errorMap = array_merge($this->errorMap, $config['errorMap']);
         }
